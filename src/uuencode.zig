@@ -23,6 +23,33 @@ pub fn encodeFile(writer: anytype, file_name: []const u8, mode: ?std.fs.File.Mod
     try writer.writeAll("end\n");
 }
 
+// pub fn decodeFile(reader: anytype) !Decoder {
+//     var decoder = Decoder(@TypeOf(reader)){
+//         .reader = reader,
+//         .file_name = .{},
+//         .mode = undefined,
+//     };
+
+//     // TODO: Decode file name and mode here
+
+//     return decoder;
+// }
+
+// pub fn Decoder(comptime Reader: type) type {
+//     return struct {
+//         const Self = @This();
+
+//         reader: Reader,
+
+//         file_name: std.BoundedArray(u8, 512),
+//         mode: std.fs.File.Mode,
+
+//         pub fn next(self: *Self) !?[]const u8 {
+//             //
+//         }
+//     };
+// }
+
 /// Encodes a single line of data with the UU scheme without the line terminator.
 /// - `writer` is a std.io.Writer instance
 /// - `data` is the data to be encoded. Maximum allowed length is 45 bytes.
