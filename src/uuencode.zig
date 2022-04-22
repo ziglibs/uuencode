@@ -89,7 +89,7 @@ pub fn encodeLine(writer: anytype, data: []const u8) (error{InputTooLarge} || @T
 /// This means that there might be garbage/invalid data on the stream.
 pub fn decodeLine(reader: anytype, buffer: *[45]u8) (error{ EndOfStream, IllegalCharacter } || @TypeOf(reader).Error)![]u8 {
     var length_byte = try reader.readByte();
-    if (length_byte < 0x20 and length_byte >= 77 and length_byte != '`')
+    if (length_byte < 0x20 or (length_byte > 77 and length_byte != '`'))
         return error.IllegalCharacter;
     const length = decodeNumber(length_byte) catch unreachable;
     if (length > 45) {
@@ -151,7 +151,10 @@ fn decodeNumber(val: u8) !u6 {
     return switch (val) {
         '`', ' ' => 0,
         0x21...0x5F => @truncate(u6, val - 0x20),
-        else => error.IllegalCharacter,
+        else => {
+            std.log.debug("received illegal character: 0x{X}", .{val});
+            return error.IllegalCharacter;
+        },
     };
 }
 
